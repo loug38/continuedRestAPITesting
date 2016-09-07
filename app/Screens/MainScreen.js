@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import {View, Text, StyleSheet, AppRegistry, Fetch } from 'react-native';
+import {View, Text, StyleSheet, AppRegistry, Fetch, ListView } from 'react-native';
 import FCM from 'react-native-fcm';
 
 var url = 'https://dbtest-9e865.firebaseio.com/contacts.json';
+var ready = 0;
 
 class MainScreen extends Component{
 
@@ -10,6 +11,7 @@ class MainScreen extends Component{
         super(props);
         this.state ={
             data: [],
+            listDataSource: [],
         }
     }
 
@@ -33,21 +35,41 @@ class MainScreen extends Component{
     async GETfromDB(){
             var holder = [];
             let response = await fetch(url);
-            let responseJson = await response.json;
-            for (var i = 0; i < responseJson.length(); i++){
-                holder.push(responseJson[i]);
-            }
-            this.setState({data: [].concat(holder)});
-            return responseJson.layer;
+            let responseJson = await response.json();
+
+            var ds = new ListView.DataSource({rowHasChanged: (r1,r2) => r1 != r2});
+            this.setState({data: [].concat(responseJson)});
+            this.setState({listDataSource: ds.cloneWithRows(this.state.data)});
+            ready = 1;
+
+            return responseJson;
+    }
+
+    _renderRow(arr){
+        return(
+            <View> 
+                <Text> {arr[0].name} </Text>
+            </View>
+        );
     }
 
     render(){
         let JSONtoString = this.GETfromDB();
-        return(
-           <View style={styles.container}>
-               <Text> {this.state.data} </Text>
-           </View>
-        );
+        if (ready){
+
+            return(
+                <View style={styles.container}>
+                   <Text> {`name: ${this.state.data[0].name}     role: ${this.state.data[0].role}`} </Text>
+                   <Text> {`name: ${this.state.data[1].name}     role: ${this.state.data[1].role}`} </Text>
+                </View>
+            );
+        } else {
+            return(
+                <View style={styles.container}>
+                    <Text> loading... </Text>
+                </View>
+            );
+        }
     }
 }
 
