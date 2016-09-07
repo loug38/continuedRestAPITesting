@@ -44,7 +44,7 @@ class MainScreen extends Component{
     }
 
     async GETfromDB(){
-            let response = await fetch(url);
+            let response = await fetch(url)
             let responseJson = await response.json();
 
             var ds = new ListView.DataSource({rowHasChanged: (r1,r2) => r1 != r2});
@@ -78,13 +78,11 @@ class MainScreen extends Component{
                     <View style={styles.backgroundWrapper}>
                         <Image source={require('../../img/sf.jpg')} style={styles.backgroundImage} />
                     </View>
-                    <View style={{backgroundColor: 'black', opacity: 0.75, flex: 1}}>
                     <ListView
                         dataSource={this.state.listDataSource}
                         renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
                         style={{flex: 1,}}
                     />
-                    </View>
                 </View>
             );
         } else {
@@ -123,10 +121,13 @@ const styles = StyleSheet.create({
     backgroundWrapper:{
         position: 'absolute',
         top: 20, bottom: 0, left: 0, right: 0,
+        backgroundColor: 'rgba(0,0,0,.6)',
+
     },
 
     backgroundImage: {
         resizeMode: 'contain',
+        backgroundColor: 'rgba(0,0,0,.6)'
     },
 
     row:{
@@ -140,10 +141,12 @@ const styles = StyleSheet.create({
     name: {
         fontSize: 20,
         color: 'white',
+        backgroundColor: 'transparent',
     },
 
     role: {
         color: 'white',
+        backgroundColor: 'transparent',
     },
 
     centerScreen: {
