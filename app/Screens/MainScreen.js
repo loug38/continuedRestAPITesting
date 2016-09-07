@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import {View, Text, StyleSheet, AppRegistry, Fetch, ListView, StatusBar, Image, TouchableOpacity } from 'react-native';
 import FCM from 'react-native-fcm';
+import Spinner from 'react-native-loading-spinner-overlay';
+var _ = require('lodash');
 
 var url = 'https://dbtest-9e865.firebaseio.com/contacts.json';
 var ready = 0;
-var totalRows = 0;
-var currentRow = 0;
 
 class MainScreen extends Component{
 
@@ -35,11 +35,15 @@ class MainScreen extends Component{
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        return (this.state.data !== nextState.data);
+        var ret = _.isEqual(this.state.data, nextState.data);
+        if (ret && !ready) {
+            ready = true;
+            this.forceUpdate();
+        }
+        return (!ret);
     }
 
     async GETfromDB(){
-            var holder = [];
             let response = await fetch(url);
             let responseJson = await response.json();
 
@@ -47,31 +51,19 @@ class MainScreen extends Component{
             this.setState({ data: [].concat(responseJson) });
             this.setState({ listDataSource: ds.cloneWithRows(this.state.data)} );
             ready = 1;
-            totalRows = this.state.data.length;
-
             return responseJson;
     }
 
     _renderRow(arr, rowID){
-         let style = [
-            styles.row,
-            {'backgroundColor': 'rgba(0,0,0,0.75)',
-             'flex': 1,
-             'justifyContent': 'center',
-             'height': 100,
-             'alignItems': 'stretch',
-             'borderTopWidth': (rowID == 0 ? 0 : 1),
-             'borderColor': 'white',
-            }
-        ];
         return(
             <View>
                 <TouchableOpacity>
-                    <View style={style}>
+                    <View style={styles.row}>
                         <Text style={styles.name}> {arr[rowID].name} </Text>
                         <Text style={styles.role}> {arr[rowID].role} </Text>
                     </View>
                 </TouchableOpacity>
+                <View style={{height: 1, backgroundColor: 'white'}} />
             </View>
         );
     }
@@ -86,19 +78,21 @@ class MainScreen extends Component{
                     <View style={styles.backgroundWrapper}>
                         <Image source={require('../../img/sf.jpg')} style={styles.backgroundImage} />
                     </View>
+                    <View style={{backgroundColor: 'black', opacity: 0.75, flex: 1}}>
                     <ListView
                         dataSource={this.state.listDataSource}
                         renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
+                        style={{flex: 1,}}
                     />
+                    </View>
                 </View>
             );
         } else {
             return(
-                <View style={styles.container}>
+                <View style={styles.loadingScreen}>
                     <StatusBar barStyle='light-content' />
-                    <View style={styles.statusBar} />
-                    <View style={styles.centerScreen} >
-                        <Text> loading... </Text>
+                    <View style={{ flex: 1, backgroundColor: 'dodgerblue' }}>
+                        <Spinner visible={true} />
                     </View>
                 </View>
             );
@@ -121,6 +115,11 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
     },
 
+    loadingScreen: {
+        flex: 1,
+        alignItems: 'stretch',
+    },
+
     backgroundWrapper:{
         position: 'absolute',
         top: 20, bottom: 0, left: 0, right: 0,
@@ -128,6 +127,14 @@ const styles = StyleSheet.create({
 
     backgroundImage: {
         resizeMode: 'contain',
+    },
+
+    row:{
+        flex: 1,
+        justifyContent: 'center',
+        height: 100,
+        alignItems: 'stretch',
+        paddingLeft: 5,
     },
 
     name: {
