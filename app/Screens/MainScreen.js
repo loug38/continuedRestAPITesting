@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {View, Text, StyleSheet, AppRegistry, Fetch, ListView, StatusBar, Image, TouchableOpacity } from 'react-native';
+import {View, Text, StyleSheet, AppRegistry, Fetch, ListView, StatusBar, Image, TouchableOpacity, Platform } from 'react-native';
 import FCM from 'react-native-fcm';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Timer from 'react-native-timer';
@@ -19,12 +19,6 @@ class MainScreen extends Component{
         }
     }
 
-    // Updates the app with database info every 10 sec
-    checkForUpdates(){
-        this.setState({timeLineTop: this.state.timeLineTop += 1});
-        let JSONtoString = this.GETfromDB();
-    }
-
     componentDidMount(){
         Timer.setInterval(this, 'check for update', () => this.checkForUpdates(), 10000);
         FCM.getFCMToken().then(token => {
@@ -35,13 +29,20 @@ class MainScreen extends Component{
             //holder for now
         });
 
-        FCM.subscribeToTopic('topic/contacts');
-        FCM.unsubscribeFromTopic('topic/contacts');
+        FCM.subscribeToTopic('contacts');
+        FCM.unsubscribeFromTopic('contacts');
     }
 
     // Clears timers
     componentWillUnmount(){
         Timer.clearInterval(this);
+    }
+
+    
+    // Updates the app with database info every 10 sec
+    checkForUpdates(){
+        this.setState({timeLineTop: this.state.timeLineTop += 1});
+        let JSONtoString = this.GETfromDB();
     }
 
     // Pulls from database
@@ -85,25 +86,45 @@ class MainScreen extends Component{
             );
         }
 
-        // The actual style that creates the ListView
-        return(
-            <View style={styles.container}>
-                <StatusBar barStyle='light-content' />
-                <View style={styles.statusBar} />
-                <View style={styles.backgroundWrapper}>
-                    <Image source={require('../../img/sf.jpg')} style={styles.backgroundImage} />
+        // The actual style that creates the ListView one for Android and one for iOS
+        
+        if (Platform.OS === 'ios'){
+            //iOS
+            return(
+                <View style={styles.container}>
+                    <StatusBar barStyle='light-content' />
+                    <View style={styles.statusBar} />
+                    <View style={styles.backgroundWrapperIOS}>
+                        <Image source={require('../../img/sf.jpg')} style={styles.backgroundImage} />
+                    </View>
+                    <ListView
+                        dataSource={this.state.listDataSource}
+                        renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
+                        style={{flex: 1,}}
+                    />
+                    <View style={styles.bottomButton}>
+                        <Text style={{fontSize: 20, color: 'white', paddingTop: 12}}> {this.state.timeLineTop} </Text>
+                    </View>
                 </View>
-                <ListView
-                    dataSource={this.state.listDataSource}
-                    renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
-                    style={{flex: 1,}}
-                />
-                <View style={styles.bottomButton}>
-                    <Text style={{fontSize: 20, color: 'white', paddingTop: 12}}> {this.state.timeLineTop} </Text>
+            );
+         } else {
+            //Android
+            return(
+                <View style={styles.container}>
+                    <View style={styles.backgroundWrapperAndroid}>
+                        <Image source={require('../../img/sf.jpg')} style={styles.backgroundImage} />
+                    </View>
+                    <ListView
+                        dataSource={this.state.listDataSource}
+                        renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
+                        style={{flex: 1,}}
+                    />
+                    <View style={styles.bottomButton}>
+                        <Text style={{fontSize: 20, color: 'white', paddingTop: 12}}> {this.state.timeLineTop} </Text>
+                    </View>
                 </View>
-            </View>
-        );
-     
+            );
+         }
     }
 }
 
@@ -127,11 +148,16 @@ const styles = StyleSheet.create({
         alignItems: 'stretch',
     },
 
-    backgroundWrapper:{
+    backgroundWrapperIOS:{
         position: 'absolute',
         top: 20, bottom: 0, left: 0, right: 0,
         backgroundColor: 'rgba(0,0,0,.6)',
+    },
 
+    backgroundWrapperAndroid: {
+        position: 'absolute',
+        top: 0, bottom: 0, left: 0, right: 0,
+        backgroundColor: 'rgba(0,0,0,.6)',
     },
 
     backgroundImage: {
