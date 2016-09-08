@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
         height: 100,
         alignItems: 'stretch',
         paddingLeft: 5,
+        backgroundColor: 'rgba(128,128,128, 0.25)',
     },
 
     name: {
