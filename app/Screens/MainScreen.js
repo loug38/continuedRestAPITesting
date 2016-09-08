@@ -19,12 +19,13 @@ class MainScreen extends Component{
         }
     }
 
-    timer(){
+    checkForUpdates(){
         this.setState({timeLineTop: this.state.timeLineTop += 1});
+        let JSONtoString = this.GETfromDB();
     }
 
     componentDidMount(){
-        Timer.setInterval(this, 'check for update', () => this.timer(), 10000);
+        Timer.setInterval(this, 'check for update', () => this.checkForUpdates(), 10000);
         FCM.getFCMToken().then(token => {
             console.log(token); //would normally be saved in DB
         });
