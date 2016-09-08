@@ -19,6 +19,7 @@ class MainScreen extends Component{
         }
     }
 
+    // Updates the app with database info every 10 sec
     checkForUpdates(){
         this.setState({timeLineTop: this.state.timeLineTop += 1});
         let JSONtoString = this.GETfromDB();
@@ -34,28 +35,16 @@ class MainScreen extends Component{
             //holder for now
         });
 
-        //this.refreshUnsubscribe = FCM.on('refreshToken' => {
-         //   console.log(token); // token may not be available on first load, so catch here.
-        //})
-
         FCM.subscribeToTopic('topic/contacts');
         FCM.unsubscribeFromTopic('topic/contacts');
     }
 
+    // Clears timers
     componentWillUnmount(){
         Timer.clearInterval(this);
     }
 
-   /* shouldComponentUpdate(nextProps, nextState) {
-        var ret = _.isEqual(this.state.data, nextState.data);
-        if (ret && !ready) {
-            ready = true;
-            return(true);
-        }
-        return (!ret);
-
-    }*/
-
+    // Pulls from database
     async GETfromDB(){
             let response = await fetch(url, {method: 'GET'})
             let responseJson = await response.json();
@@ -67,6 +56,7 @@ class MainScreen extends Component{
             return responseJson;
     }
 
+    //renders rows in the ListView
     _renderRow(arr, rowID){
         return(
             <View>
@@ -82,6 +72,7 @@ class MainScreen extends Component{
     }
 
     render(){
+        // Initial loading screen while the ListView is being populated.
         while (!ready){
             let JSONtoString = this.GETfromDB();
             return(
@@ -93,6 +84,8 @@ class MainScreen extends Component{
                 </View>
             );
         }
+
+        // The actual style that creates the ListView
         return(
             <View style={styles.container}>
                 <StatusBar barStyle='light-content' />
@@ -100,12 +93,14 @@ class MainScreen extends Component{
                 <View style={styles.backgroundWrapper}>
                     <Image source={require('../../img/sf.jpg')} style={styles.backgroundImage} />
                 </View>
-                <Text> {this.state.timeLineTop} </Text>
                 <ListView
                     dataSource={this.state.listDataSource}
                     renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
                     style={{flex: 1,}}
                 />
+                <View style={styles.bottomButton}>
+                    <Text style={{fontSize: 20, color: 'white', paddingTop: 12}}> {this.state.timeLineTop} </Text>
+                </View>
             </View>
         );
      
@@ -168,6 +163,12 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+
+    bottomButton: {
+        height: 50,
+        alignItems: 'center',
+        backgroundColor: 'dodgerblue',
     }
 });
 
