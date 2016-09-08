@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import {View, Text, StyleSheet, AppRegistry, Fetch, ListView, StatusBar, Image, TouchableOpacity, Platform } from 'react-native';
+import {View, Text, StyleSheet, AppRegistry, Fetch, ListView, 
+        StatusBar, Image, TouchableOpacity, Platform } from 'react-native';
+
 import FCM from 'react-native-fcm';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Timer from 'react-native-timer';
 
-var _ = require('lodash');
 var url = 'https://dbtest-9e865.firebaseio.com/contacts.json';
 var ready = 0;
 
@@ -38,14 +39,14 @@ class MainScreen extends Component{
         Timer.clearInterval(this);
     }
 
-    
+
     // Updates the app with database info every 10 sec
     checkForUpdates(){
         this.setState({timeLineTop: this.state.timeLineTop += 1});
         let JSONtoString = this.GETfromDB();
     }
 
-    // Pulls from database
+    // Pulls from database and marks global 'ready' to true.
     async GETfromDB(){
             let response = await fetch(url, {method: 'GET'})
             let responseJson = await response.json();
@@ -73,7 +74,7 @@ class MainScreen extends Component{
     }
 
     render(){
-        // Initial loading screen while the ListView is being populated.
+        // Initial loading screen while waiting for promises to finish
         while (!ready){
             let JSONtoString = this.GETfromDB();
             return(
@@ -87,7 +88,6 @@ class MainScreen extends Component{
         }
 
         // The actual style that creates the ListView one for Android and one for iOS
-        
         if (Platform.OS === 'ios'){
             //iOS
             return(
@@ -183,13 +183,6 @@ const styles = StyleSheet.create({
     role: {
         color: 'white',
         backgroundColor: 'transparent',
-    },
-
-    centerScreen: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
     },
 
     bottomButton: {
