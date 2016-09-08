@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import {View, Text, StyleSheet, AppRegistry, Fetch, ListView, StatusBar, Image, TouchableOpacity } from 'react-native';
 import FCM from 'react-native-fcm';
 import Spinner from 'react-native-loading-spinner-overlay';
-var _ = require('lodash');
+import Timer from 'react-native-timer';
 
+var _ = require('lodash');
 var url = 'https://dbtest-9e865.firebaseio.com/contacts.json';
 var ready = 0;
 
@@ -14,10 +15,16 @@ class MainScreen extends Component{
         this.state ={
             data: [],
             listDataSource: [],
+            timeLineTop: 0,
         }
     }
 
+    timer(){
+        this.setState({timeLineTop: this.state.timeLineTop += 1});
+    }
+
     componentDidMount(){
+        Timer.setInterval(this, 'check for update', () => this.timer(), 10000);
         FCM.getFCMToken().then(token => {
             console.log(token); //would normally be saved in DB
         });
@@ -34,17 +41,22 @@ class MainScreen extends Component{
         FCM.unsubscribeFromTopic('topic/contacts');
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    componentWillUnmount(){
+        Timer.clearInterval(this);
+    }
+
+   /* shouldComponentUpdate(nextProps, nextState) {
         var ret = _.isEqual(this.state.data, nextState.data);
         if (ret && !ready) {
             ready = true;
-            this.forceUpdate();
+            return(true);
         }
         return (!ret);
-    }
+
+    }*/
 
     async GETfromDB(){
-            let response = await fetch(url)
+            let response = await fetch(url, {method: 'GET'})
             let responseJson = await response.json();
 
             var ds = new ListView.DataSource({rowHasChanged: (r1,r2) => r1 != r2});
@@ -69,23 +81,8 @@ class MainScreen extends Component{
     }
 
     render(){
-        let JSONtoString = this.GETfromDB();
-        if (ready){
-            return(
-                <View style={styles.container}>
-                    <StatusBar barStyle='light-content' />
-                    <View style={styles.statusBar} />
-                    <View style={styles.backgroundWrapper}>
-                        <Image source={require('../../img/sf.jpg')} style={styles.backgroundImage} />
-                    </View>
-                    <ListView
-                        dataSource={this.state.listDataSource}
-                        renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
-                        style={{flex: 1,}}
-                    />
-                </View>
-            );
-        } else {
+        while (!ready){
+            let JSONtoString = this.GETfromDB();
             return(
                 <View style={styles.loadingScreen}>
                     <StatusBar barStyle='light-content' />
@@ -95,6 +92,22 @@ class MainScreen extends Component{
                 </View>
             );
         }
+        return(
+            <View style={styles.container}>
+                <StatusBar barStyle='light-content' />
+                <View style={styles.statusBar} />
+                <View style={styles.backgroundWrapper}>
+                    <Image source={require('../../img/sf.jpg')} style={styles.backgroundImage} />
+                </View>
+                <Text> {this.state.timeLineTop} </Text>
+                <ListView
+                    dataSource={this.state.listDataSource}
+                    renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
+                    style={{flex: 1,}}
+                />
+            </View>
+        );
+     
     }
 }
 
