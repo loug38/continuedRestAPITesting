@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {View, Text, StyleSheet, AppRegistry, Fetch, ListView, 
-        StatusBar, Image, TouchableOpacity, Platform } from 'react-native';
+        StatusBar, Image, TouchableHighlight, Platform, Dimensions } from 'react-native';
 
 import FCM from 'react-native-fcm';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 var url = 'https://dbtest-9e865.firebaseio.com/contacts.json';
 var ready = 0;
+const window = Dimensions.get('window');
 
 class MainScreen extends Component{
 
@@ -63,17 +64,22 @@ class MainScreen extends Component{
     _renderRow(arr, rowID){
         return(
             <View>
-                <TouchableOpacity>
+                <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>
+                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
                     <View style={styles.row}>
                         <Text style={styles.name}> {arr[rowID].name} </Text>
                         <Text style={styles.role}> {arr[rowID].role} </Text>
                     </View>
-                </TouchableOpacity>
+                    <Icon name={'angle-right'} size={30} color={'#aaaaaa'} style={styles.moreIcon}/>
+                </View>
+                </TouchableHighlight>
                 <View style={{backgroundColor: 'rgba(128,128,128, 0.25)'}}>
                 </View>
             </View>
         );
     }
+
+    _handlePress(){ return null; }
 
     render(){
         // Initial loading screen while waiting for promises to finish
@@ -97,13 +103,29 @@ class MainScreen extends Component{
                     <StatusBar barStyle='light-content' />
                     <View style={styles.statusBar} />
                     <View style={styles.navBar}>
-                        <Icon name={'bars'} size={20} color={'white'} />
+                        <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>
+                            <Icon name={'bars'} size={20} color={'white'} />
+                        </TouchableHighlight>
                         <Text style={{color: 'white', fontSize: 20}}> Main Menu </Text>
-                        <Icon name={'search'} size={20} color={'white'} />
+                        <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>
+                            <Icon name={'search'} size={20} color={'white'} />
+                        </TouchableHighlight>
                     </View>
                     <View style={styles.titleBar}>
-                        <Icon name={'user'} size={50} color={'#aaaaaa'} />
-                        <Text style={styles.title}> Contacts </Text>
+                        <Icon name={'envelope'} size={50} color={'#aaaaaa'} />
+                        <Text style={styles.title}> Messenger </Text>
+                    </View>
+                    <View style={styles.tabContainer}>
+                        <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>
+                            <View style={styles.tab}>
+                                <Text style={{fontSize: 15, paddingTop: 5, paddingBottom: 5}}> Contacts </Text>
+                            </View>
+                        </TouchableHighlight>
+                        <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>                        
+                            <View style={styles.tab2}>
+                                <Text style={{fontSize: 15, paddingTop: 5, paddingBottom: 5, color: '#aaaaaa'}}> Messages </Text>
+                            </View>
+                        </TouchableHighlight>
                     </View>
                     <View style={styles.listViewContainer}>
                         <ListView
@@ -186,8 +208,8 @@ const styles = StyleSheet.create({
     },
 
     titleBar: {
-        paddingTop: 30,
-        paddingBottom: 30,
+        paddingTop: 10,
+        paddingBottom: 10,
         alignItems: 'center',
         shadowColor: 'black',
         shadowOpacity: 0.25,
@@ -201,6 +223,38 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 50,
         color: '#444444',
+    },
+
+    tabContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        height: 45,
+        borderTopWidth: 2,
+        borderTopColor: '#dddddd',
+        backgroundColor: 'white',
+    },
+
+    tab: {
+        flex: 1,
+        alignItems: 'center',
+        borderRightWidth: 1,
+        borderRightColor: '#dddddd',
+        paddingTop: 3,
+        marginTop: 5,
+        marginBottom: 5,
+        width: (window.width / 2),
+    },
+
+    tab2: {
+        flex: 1,
+        alignItems: 'center',
+        borderLeftWidth: 1,
+        borderLeftColor: '#dddddd',
+        paddingTop: 3,
+        marginTop: 5,
+        marginBottom: 5,
+        width: (window.width / 2),
     },
 
     listViewContainer: {
@@ -240,10 +294,21 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
     },
 
+    moreIcon: {
+        paddingTop: 20,
+        paddingRight: 15,
+    },
+
     bottomButton: {
         height: 50,
         alignItems: 'center',
-        backgroundColor: 'dodgerblue',
+        backgroundColor: 'dodgerblue',        
+        shadowColor: 'black',
+        shadowOpacity: 0.25,
+        shadowOffset: {
+            height: 2,
+            width: 1,
+        },
     }
 });
 
