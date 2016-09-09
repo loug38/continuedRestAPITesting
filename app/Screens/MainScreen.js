@@ -19,6 +19,10 @@ class MainScreen extends Component{
             data: [],
             listDataSource: [],
             timeLineTop: 0,
+            contactsTab: 'dodgerblue',
+            messagesTab: 'transparent',
+            contactsFontColor: 'black',
+            messagesFontColor: '#aaaaaa',
         }
     }
 
@@ -78,7 +82,24 @@ class MainScreen extends Component{
         );
     }
 
-    _handlePress(){ return null; }
+    _handleContactsPress(){ 
+        if (this.state.contactsTab == 'dodgerblue'){
+            return null;
+        } else {
+            this.setState({contactsTab: 'dodgerblue', messagesTab: 'transparent',
+                           contactsFontColor: 'black', messagesFontColor: '#aaaaaa'});
+        }
+    }
+
+    _handleMessagesPress(){
+        if (this.state.messagesTab == 'dodgerblue'){
+            return null;
+        } else {
+            this.setState({messagesTab: 'dodgerblue', contactsTab: 'transparent',
+                           messagesFontColor: 'black', contactsFontColor: '#aaaaaa'});
+
+        }
+    }
 
     render(){
         // Initial loading screen while waiting for promises to finish
@@ -102,7 +123,7 @@ class MainScreen extends Component{
                     <StatusBar barStyle='light-content' />
                     <View style={styles.statusBar} />
 
-                    {/* The top navigation bar */}
+                    {/* The top navigation bar 🌟 */}
                     <View style={styles.navBar}>
                         <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>
                             <Icon name={'bars'} size={20} color={'white'} />
@@ -121,14 +142,20 @@ class MainScreen extends Component{
 
                     {/* The tab bar */}
                     <View style={styles.tabContainer}>
-                        <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>
+                        <TouchableHighlight onPress={() => this._handleContactsPress()} underlayColor='dodgerblue'>
                             <View style={styles.tab}>
-                                <Text style={{fontSize: 15, paddingTop: 5, paddingBottom: 5}}> Contacts </Text>
+                                <Text style={{fontSize: 15, paddingTop: 5, paddingBottom: 5, color: this.state.contactsFontColor}}> 
+                                    Contacts 
+                                </Text>
+                                <View style={{height: 3, backgroundColor: this.state.contactsTab, width: (window.width / 3), marginTop: 4}} />
                             </View>
                         </TouchableHighlight>
-                        <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>                        
+                        <TouchableHighlight onPress={() => this._handleMessagesPress()} underlayColor='dodgerblue'>                        
                             <View style={styles.tab2}>
-                                <Text style={{fontSize: 15, paddingTop: 5, paddingBottom: 5, color: '#aaaaaa'}}> Messages </Text>
+                                <Text style={{fontSize: 15, paddingTop: 5, paddingBottom: 5, color: this.state.messagesFontColor }}> 
+                                    Messages 
+                                </Text>
+                                <View style={{height: 3, backgroundColor: this.state.messagesTab, width: (window.width / 3), marginTop: 4}} />                                
                             </View>
                         </TouchableHighlight>
                     </View>
@@ -228,7 +255,7 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        fontSize: 50,
+        fontSize: 40,
         color: '#444444',
     },
 
