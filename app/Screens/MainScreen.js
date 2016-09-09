@@ -41,7 +41,6 @@ class MainScreen extends Component{
         Timer.clearInterval(this);
     }
 
-
     // Updates the app with database info every 10 sec
     checkForUpdates(){
         this.setState({timeLineTop: this.state.timeLineTop += 1});
@@ -55,7 +54,7 @@ class MainScreen extends Component{
 
             var ds = new ListView.DataSource({rowHasChanged: (r1,r2) => r1 != r2});
             this.setState({ data: [].concat(responseJson) });
-            this.setState({ listDataSource: ds.cloneWithRows(this.state.data)} );
+            this.setState({ listDataSource: ds.cloneWithRows(this.state.data) });
             ready = 1;
             return responseJson;
     }
@@ -102,6 +101,8 @@ class MainScreen extends Component{
                 <View style={styles.container}>
                     <StatusBar barStyle='light-content' />
                     <View style={styles.statusBar} />
+
+                    {/* The top navigation bar */}
                     <View style={styles.navBar}>
                         <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>
                             <Icon name={'bars'} size={20} color={'white'} />
@@ -111,10 +112,14 @@ class MainScreen extends Component{
                             <Icon name={'search'} size={20} color={'white'} />
                         </TouchableHighlight>
                     </View>
+
+                    {/* The title at the top */}
                     <View style={styles.titleBar}>
                         <Icon name={'envelope'} size={50} color={'#aaaaaa'} />
                         <Text style={styles.title}> Messenger </Text>
                     </View>
+
+                    {/* The tab bar */}
                     <View style={styles.tabContainer}>
                         <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>
                             <View style={styles.tab}>
@@ -127,6 +132,8 @@ class MainScreen extends Component{
                             </View>
                         </TouchableHighlight>
                     </View>
+
+                    {/* List of contacts */}
                     <View style={styles.listViewContainer}>
                         <ListView
                             dataSource={this.state.listDataSource}
