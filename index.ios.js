@@ -5,7 +5,7 @@ import AppNavigator from './app/Navigation/AppNavigator';
 class RestTest extends Component {
     render() {
         return(
-            <AppNavigator initialRoute={{ident: 'MainScreen'}} />
+            <AppNavigator initialRoute={{ident: 'CalendarScreen'}} />
         );
     }
 }

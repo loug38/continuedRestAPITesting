@@ -5,6 +5,7 @@ import {View, Text, StyleSheet, AppRegistry, Fetch, ListView,
 import FCM from 'react-native-fcm';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Timer from 'react-native-timer';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 var url = 'https://dbtest-9e865.firebaseio.com/contacts.json';
 var ready = 0;
@@ -68,7 +69,8 @@ class MainScreen extends Component{
                         <Text style={styles.role}> {arr[rowID].role} </Text>
                     </View>
                 </TouchableOpacity>
-                <View style={{height: 1, backgroundColor: 'white'}} />
+                <View style={{backgroundColor: 'rgba(128,128,128, 0.25)'}}>
+                </View>
             </View>
         );
     }
@@ -94,14 +96,22 @@ class MainScreen extends Component{
                 <View style={styles.container}>
                     <StatusBar barStyle='light-content' />
                     <View style={styles.statusBar} />
-                    <View style={styles.backgroundWrapperIOS}>
-                        <Image source={require('../../img/sf.jpg')} style={styles.backgroundImage} />
+                    <View style={styles.navBar}>
+                        <Icon name={'bars'} size={20} color={'white'} />
+                        <Text style={{color: 'white', fontSize: 20}}> Main Menu </Text>
+                        <Icon name={'search'} size={20} color={'white'} />
                     </View>
-                    <ListView
-                        dataSource={this.state.listDataSource}
-                        renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
-                        style={{flex: 1,}}
-                    />
+                    <View style={styles.titleBar}>
+                        <Icon name={'user'} size={50} color={'#aaaaaa'} />
+                        <Text style={styles.title}> Contacts </Text>
+                    </View>
+                    <View style={styles.listViewContainer}>
+                        <ListView
+                            dataSource={this.state.listDataSource}
+                            renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
+                            style={{flex: 1}}
+                        />
+                    </View>                        
                     <View style={styles.bottomButton}>
                         <Text style={{fontSize: 20, color: 'white', paddingTop: 12}}> {this.state.timeLineTop} </Text>
                     </View>
@@ -114,11 +124,11 @@ class MainScreen extends Component{
                     <View style={styles.backgroundWrapperAndroid}>
                         <Image source={require('../../img/sf.jpg')} style={styles.backgroundImage} />
                     </View>
-                    <ListView
-                        dataSource={this.state.listDataSource}
-                        renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
-                        style={{flex: 1,}}
-                    />
+                        <ListView
+                            dataSource={this.state.listDataSource}
+                            renderRow={(data, sectionID, rowID) => {return this._renderRow(this.state.data, rowID)}}
+                            style={{flex: 1}}
+                        />
                     <View style={styles.bottomButton}>
                         <Text style={{fontSize: 20, color: 'white', paddingTop: 12}}> {this.state.timeLineTop} </Text>
                     </View>
@@ -132,9 +142,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'flex-start',
         alignItems: 'stretch',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: '#DDDDDD',
     },
 
     statusBar: {
@@ -151,7 +160,7 @@ const styles = StyleSheet.create({
     backgroundWrapperIOS:{
         position: 'absolute',
         top: 20, bottom: 0, left: 0, right: 0,
-        backgroundColor: 'rgba(0,0,0,.6)',
+        backgroundColor: 'rgba(255,255,255,1)',
     },
 
     backgroundWrapperAndroid: {
@@ -165,23 +174,69 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,.6)'
     },
 
+    navBar: {
+        flexDirection: 'row',
+        backgroundColor: 'dodgerblue',
+        height: 40,
+        justifyContent: 'space-between',
+        paddingTop: 5,
+        paddingBottom: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
+    },
+
+    titleBar: {
+        paddingTop: 30,
+        paddingBottom: 30,
+        alignItems: 'center',
+        shadowColor: 'black',
+        shadowOpacity: 0.25,
+        shadowOffset:{
+            height: 2,
+            width: 2,
+        },
+        backgroundColor: 'white',
+    },
+
+    title: {
+        fontSize: 50,
+        color: '#444444',
+    },
+
+    listViewContainer: {
+        flex: 1,
+        backgroundColor: 'white',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        shadowColor: 'black',
+        shadowOpacity: 0.25,
+        shadowOffset: {
+            height: 2,
+            width: 2,
+        },
+        marginTop: 10,
+        marginRight: 10,
+        marginLeft: 10,
+    },
+
     row:{
         flex: 1,
         justifyContent: 'center',
-        height: 100,
+        height: 70,
         alignItems: 'stretch',
-        paddingLeft: 5,
-        backgroundColor: 'rgba(128,128,128, 0.25)',
+        paddingLeft: 20,
+        marginTop: 5,
+        marginRight: 20,
     },
 
     name: {
         fontSize: 20,
-        color: 'white',
+        color: 'black',
         backgroundColor: 'transparent',
     },
 
     role: {
-        color: 'white',
+        color: '#aaaaaa',
         backgroundColor: 'transparent',
     },
 
