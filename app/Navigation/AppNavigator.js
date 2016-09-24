@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Navigator, StyleSheet} from 'react-native';
 
 import MainScreen from '../../app/Screens/MainScreen';
+import ClaimsScreen from '../../app/Screens/ClaimsScreen';
+import MessagesScreen from '../../app/Screens/MessagesScreen';
 
 class AppNavigator extends Component{
     render(){
@@ -19,16 +21,34 @@ class AppNavigator extends Component{
 
     _renderScene(route, navigator){
         var globalNavigatorProps = {navigator}
-        switch(route.ident){
-        	case 'MainScreen':
+        switch(route.ident.ident){
+        	case "MainScreen": {
         	    return (
                     <MainScreen {...globalNavigatorProps} />
         		);
                 break;
-        	default:
+            }
+
+            case "ClaimsScreen": {
+                return(
+                    <ClaimsScreen {...globalNavigatorProps} />
+                );
+                break;
+            }
+
+            case "MessagesScreen": {
+                return(
+                    <MessagesSCreen {...globalNavigatorProps} />
+                );
+                break;
+            }
+
+        	default: {
         	    return (
                     <MainScreen {...globalNavigatorProps} />
 		        );
+                break;
+            }
         }
     }
 }

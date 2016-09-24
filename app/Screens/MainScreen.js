@@ -19,10 +19,7 @@ class MainScreen extends Component{
             data: [],
             listDataSource: [],
             timeLineTop: 0,
-            contactsTab: 'dodgerblue',
-            messagesTab: 'transparent',
-            contactsFontColor: 'black',
-            messagesFontColor: '#aaaaaa',
+            currentStep: 'Claims'
         }
     }
 
@@ -63,42 +60,29 @@ class MainScreen extends Component{
             return responseJson;
     }
 
+    _handleClaimPress(){
+        this.props.navigator.push({
+            ident: "MessagesScreen",
+        });
+    }
+
     //renders rows in the ListView
     _renderRow(arr, rowID){
         return(
             <View>
-                <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>
-                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
-                    <View style={styles.row}>
-                        <Text style={styles.name}> {arr[rowID].name} </Text>
-                        <Text style={styles.role}> {arr[rowID].role} </Text>
+                <TouchableHighlight onPress={() => this._handleClaimPress} underlayColor='dodgerblue'>
+                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <View style={styles.row}>
+                            <Text style={styles.name}> {arr[rowID].name} </Text>
+                            <Text style={styles.role}> {arr[rowID].role} </Text>
+                        </View>
+                        <Icon name={'angle-right'} size={30} color={'#aaaaaa'} style={styles.moreIcon}/>
                     </View>
-                    <Icon name={'angle-right'} size={30} color={'#aaaaaa'} style={styles.moreIcon}/>
-                </View>
                 </TouchableHighlight>
                 <View style={{backgroundColor: 'rgba(128,128,128, 0.25)'}}>
                 </View>
             </View>
         );
-    }
-
-    _handleContactsPress(){ 
-        if (this.state.contactsTab == 'dodgerblue'){
-            return null;
-        } else {
-            this.setState({contactsTab: 'dodgerblue', messagesTab: 'transparent',
-                           contactsFontColor: 'black', messagesFontColor: '#aaaaaa'});
-        }
-    }
-
-    _handleMessagesPress(){
-        if (this.state.messagesTab == 'dodgerblue'){
-            return null;
-        } else {
-            this.setState({messagesTab: 'dodgerblue', contactsTab: 'transparent',
-                           messagesFontColor: 'black', contactsFontColor: '#aaaaaa'});
-
-        }
     }
 
     render(){
@@ -128,35 +112,9 @@ class MainScreen extends Component{
                         <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>
                             <Icon name={'bars'} size={20} color={'white'} />
                         </TouchableHighlight>
-                        <Text style={{color: 'white', fontSize: 20}}> Main Menu </Text>
+                        <Text style={{color: 'white', fontSize: 20}}> Contacts </Text>
                         <TouchableHighlight onPress={() => this._handlePress} underlayColor='dodgerblue'>
                             <Icon name={'search'} size={20} color={'white'} />
-                        </TouchableHighlight>
-                    </View>
-
-                    {/* The title at the top */}
-                    <View style={styles.titleBar}>
-                        <Icon name={'envelope'} size={50} color={'#aaaaaa'} />
-                        <Text style={styles.title}> Messenger </Text>
-                    </View>
-
-                    {/* The tab bar */}
-                    <View style={styles.tabContainer}>
-                        <TouchableHighlight onPress={() => this._handleContactsPress()} underlayColor='dodgerblue'>
-                            <View style={styles.tab}>
-                                <Text style={{fontSize: 15, paddingTop: 5, paddingBottom: 5, color: this.state.contactsFontColor}}> 
-                                    Contacts 
-                                </Text>
-                                <View style={{height: 3, backgroundColor: this.state.contactsTab, width: (window.width / 3), marginTop: 4}} />
-                            </View>
-                        </TouchableHighlight>
-                        <TouchableHighlight onPress={() => this._handleMessagesPress()} underlayColor='dodgerblue'>                        
-                            <View style={styles.tab2}>
-                                <Text style={{fontSize: 15, paddingTop: 5, paddingBottom: 5, color: this.state.messagesFontColor }}> 
-                                    Messages 
-                                </Text>
-                                <View style={{height: 3, backgroundColor: this.state.messagesTab, width: (window.width / 3), marginTop: 4}} />                                
-                            </View>
                         </TouchableHighlight>
                     </View>
 
@@ -169,7 +127,7 @@ class MainScreen extends Component{
                         />
                     </View>                        
                     <View style={styles.bottomButton}>
-                        <Text style={{fontSize: 20, color: 'white', paddingTop: 12}}> {this.state.timeLineTop} </Text>
+                        <Text style={{fontSize: 20, color: 'white', paddingTop: 12}}> Refresh </Text>
                     </View>
                 </View>
             );
@@ -272,12 +230,10 @@ const styles = StyleSheet.create({
     tab: {
         flex: 1,
         alignItems: 'center',
-        borderRightWidth: 1,
-        borderRightColor: '#dddddd',
         paddingTop: 3,
         marginTop: 5,
         marginBottom: 5,
-        width: (window.width / 2),
+        width: (window.width / 3),
     },
 
     tab2: {
@@ -285,10 +241,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderLeftWidth: 1,
         borderLeftColor: '#dddddd',
+        borderRightWidth: 1,
+        borderRightColor: '#dddddd',
         paddingTop: 3,
         marginTop: 5,
         marginBottom: 5,
-        width: (window.width / 2),
+        width: (window.width / 3),
     },
 
     listViewContainer: {
@@ -306,7 +264,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         marginLeft: 10,
     },
-
+     
     row:{
         flex: 1,
         justifyContent: 'center',
