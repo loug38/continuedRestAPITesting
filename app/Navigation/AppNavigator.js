@@ -13,7 +13,7 @@ class AppNavigator extends Component{
                 ref="AppNavigator"
 	            renderScene={this._renderScene}
 	            configureScene={(route) => ({
-                    ...route.sceneConfig || Navigator.SceneConfigs.FloatFromBottom
+                    ...route.sceneConfig || Navigator.SceneConfigs.FloatFromRight
 		        })}
             />
 	    );
@@ -38,7 +38,7 @@ class AppNavigator extends Component{
 
             case "MessagesScreen": {
                 return(
-                    <MessagesSCreen {...globalNavigatorProps} />
+                    <MessagesScreen {...globalNavigatorProps} />
                 );
                 break;
             }
